@@ -1,6 +1,5 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-
     "contentVersion": "1.0.0.1",
     "parameters": {
         "adminUsername": {
@@ -100,13 +99,14 @@
         "Enable-CloudLabsEmbeddedShadow": "[concat(' -vmAdminUsername ', parameters('adminUsername'), ' -trainerUserName ', parameters('trainerUserName'), ' -trainerUserPassword ', parameters('trainerUserPassword'))]",
         "cloudlabsCommon": "[concat(' -AzureUserName ', parameters('AzureUserName'), ' -AzurePassword ', parameters('AzurePassword'), ' -AzureTenantID ', variables('AzureTenantID'), ' -AzureSubscriptionID ', variables('AzureSubscriptionID'), ' -ODLID ', parameters('ODLID'), ' -DeploymentID ', parameters('DeploymentID'),' -InstallCloudLabsShadow ', parameters('InstallCloudLabsShadow'))]",
         "location": "[resourceGroup().location]",
-        "storageAccountName": "[concat('sqlhacksa', uniqueString(resourceGroup().id))]",
+        "storageAccountName": "[concat('sqlhacksa', parameters('DeploymentID'))]",
         "jbVirtualMachineName": "vm-TEAM",
         "virtualMachineSize": "Standard_D2s_v3",
         "jbNetworkInterfaceName": "[concat( 'nic-', variables('jbVirtualMachineName'))]",
         "jbNetworkSecurityGroupName": "[concat('nsg-',variables('jbVirtualMachineName'))]",
         "jbPublicIpAddressName": "[concat( 'ip-', variables('jbVirtualMachineName'))]",
         "sqlVirtualMachineName": "legacysql2008",
+        "routeTableName": "[concat(resourceGroup().name, '-route-table')]",
         "sqlNetworkSecurityGroupName": "[concat(variables('sqlVirtualMachineName'), '-nsg')]",
         "sqlNetworkInterfaceName": "[concat(variables('sqlVirtualMachineName'), '-nic')]",
         "sqlPublicIpAddressName": "[concat(variables('sqlVirtualMachineName'), '-ip')]",
