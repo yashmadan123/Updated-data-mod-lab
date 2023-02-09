@@ -320,7 +320,7 @@
                 "[variables('sqlCustomScriptUri')]",
                 "https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/cloudlabs-windows-functions.ps1"
               ],
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File migrating-sql-database-to-azure(2)/', variables('sqlCustomScriptFileName'), ' ',variables('cloudlabsCommon'))]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File Updated-data-mod-lab/', variables('sqlCustomScriptFileName'), ' ',variables('cloudlabsCommon'))]"
             }
           },
           "dependsOn": [
@@ -442,7 +442,7 @@
                 "[variables('jbCustomScriptUri')]",
                 "https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/cloudlabs-windows-functions.ps1"
               ],
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', 'migrating-sql-database-to-azure(2)/jumpvm.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', 'Updated-data-mod-lab/jumpvm.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
 
             }
           },
