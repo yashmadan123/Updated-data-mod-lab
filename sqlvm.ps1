@@ -1,5 +1,3 @@
-
-    
 Param (
     [Parameter(Mandatory = $true)]
     [string]
@@ -21,9 +19,7 @@ Param (
     $DeploymentID,
 
     [string]
-    $InstallCloudLabsShadow
-
-   
+    $InstallCloudLabsShadow  
 )
 
 Start-Transcript -Path C:\WindowsAzure\Logs\CloudLabsCustomScriptExtension.txt -Append
