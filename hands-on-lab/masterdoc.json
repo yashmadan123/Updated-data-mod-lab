@@ -1,0 +1,11 @@
+[ {
+    "Name": "Data Modernization",
+    "Language": "English",
+    "Files":[
+      {
+        "RawFilePath": "https://raw.githubusercontent.com/yashmadan123/Updated-data-mod-lab/main/hands-on-lab/labguide.md",
+        "Order": 1
+      }
+        ]
+    }
+]
