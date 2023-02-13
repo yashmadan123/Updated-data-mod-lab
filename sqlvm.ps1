@@ -22,9 +22,6 @@ Param (
     $InstallCloudLabsShadow  
 )
 
-Start-Transcript -Path C:\WindowsAzure\Logs\CloudLabsCustomScriptExtension.txt -Append
-
-
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
@@ -45,9 +42,6 @@ Disable-InternetExplorerESC
 # Download the database backup file from the GitHub repo
 Invoke-WebRequest 'https://raw.githubusercontent.com/microsoft/MCW-Migrating-SQL-databases-to-Azure/master/Hands-on%20lab/lab-files/Database/WideWorldImporters.bak' -OutFile 'C:\WideWorldImporters.bak'
 
-# Download and install Data Mirgation Assistant
-#Invoke-WebRequest 'https://download.microsoft.com/download/C/6/3/C63D8695-CEF2-43C3-AF0A-4989507E429B/DataMigrationAssistant.msi' -OutFile 'C:\DataMigrationAssistant.msi'
-#Start-Process -file 'C:\DataMigrationAssistant.msi' -arg '/qn /l*v C:\dma_install.txt' -passthru | wait-process
 
 # Wait a few minutes to allow the SQL Resource provider setup to start
 Start-Sleep -Seconds 240.0
@@ -59,7 +53,7 @@ Add-PSSnapin SqlServerCmdletSnapin100 -ErrorAction SilentlyContinue
 # Define database variables
 $ServerName = $env:ComputerName
 $DatabaseName = 'WideWorldImporters'
-$SqlMiUser = 'sqlmiuser'
+$SqlMiUser = 'DemoUser'
 $PasswordPlainText = 'Password.1234567890'
 $PasswordSecure = ConvertTo-SecureString $PasswordPlainText -AsPlainText -Force
 $PasswordSecure.MakeReadOnly()
@@ -127,11 +121,6 @@ Restore-SqlDatabase
 Stop-Service -Name 'MSSQLSERVER' -Force
 Start-Service -Name 'MSSQLSERVER'
 
-# Enable the Service Broker functionality on the database
-Enable-ServiceBroker
-
-# Create the WorkshopUser user
-Config-SqlDatabaseLogin
 
 Sleep 10
 
@@ -206,18 +195,6 @@ Start-Process -file 'C:\DataMigrationAssistant.msi' -arg '/qn /l*v C:\dma_instal
     New-Item -Path .\Software\Policies\Microsoft\MicrosoftEdge -Name Main
     New-ItemProperty -Path .\Software\Policies\Microsoft\MicrosoftEdge\Main -Name PreventFirstRunPage -Value "1" -Type DWORD -Force -ErrorAction SilentlyContinue | Out-Null
 
-    #Setting up the edge browser as default
-
-    Invoke-WebRequest 'https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/SetUserFTA.zip' -OutFile 'C:\SetUserFTA.zip'
-    Expand-Archive -Path 'C:\SetUserFTA.zip' -DestinationPath 'C:\' -Force
-    cmd.exe /c C:\SetUserFTA\SetUserFTA.exe
-    cmd.exe /c cd C:\SetUserFTA
-    cmd.exe /c SetuserFTA http MSEdgeHTM
-    cmd.exe /c SetuserFTA https MSEdgeHTM
-    cmd.exe /c SetuserFTA .htm MSEdgeHTM
-    Sleep 5
-    Remove-Item -Path 'C:\SetUserFTA.zip'
-    Remove-Item -Path 'C:\SetUserFTA' -Force -Recurse
 choco install azure-data-studio -y
 Sleep 5
   
