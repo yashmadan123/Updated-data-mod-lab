@@ -36,6 +36,8 @@ Param (
 Start-Transcript -Path C:\WindowsAzure\Logs\CloudLabsCustomScriptExtension.txt -Append
 [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls
 [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls" 
+$adminUsername = "DemoUser"
+[System.Environment]::SetEnvironmentVariable('DeploymentID', $DeploymentID,[System.EnvironmentVariableTarget]::Machine)
 
 $trainerUserPassword = "Password.!!1"
 #Import Common Functions
@@ -50,7 +52,6 @@ WindowsServerCommon
 
 CreateCredFile $AzureUserName $AzurePassword $AzureTenantID $AzureSubscriptionID $DeploymentID
 InstallModernVmValidator
-choco install sql-server-management-studio
 #choco install dotnetfx
 sleep 10
 
@@ -84,12 +85,6 @@ Invoke-WebRequest 'https://experienceazure.blob.core.windows.net/templates/migra
 
 }
 
-<# Download and install Data Mirgation Assistant
-Invoke-WebRequest 'https://download.microsoft.com/download/C/6/3/C63D8695-CEF2-43C3-AF0A-4989507E429B/DataMigrationAssistant.msi' -OutFile 'C:\DataMigrationAssistant.msi'
-Start-Process -file 'C:\DataMigrationAssistant.msi' -arg '/qn /l*v C:\dma_install.txt' -passthru | wait-process
-Sleep 5
-#>
-
 #Download and Install edge
 
         $WebClient = New-Object System.Net.WebClient
@@ -116,5 +111,34 @@ Sleep 5
 
         $Shortcut.Save()
 
+#Download ssis script
+$WebClient = New-Object System.Net.WebClient
+$WebClient.DownloadFile("https://raw.githubusercontent.com/CloudLabsAI-Azure/Azure-Discover-Workshop/main/hands-on-lab/lab-files/ssis.ps1","C:\LabFiles\ssis.ps1")
+
+
+#adding deploymentid
+$deploymentid = $env:DeploymentID
+
+$deploymentid = 874061
+
+$path = "C:\LabFiles"
+(Get-Content -Path "$path\ssis.ps1") | ForEach-Object {$_ -Replace "deploymentidvalue", "$DeploymentID"} | Set-Content -Path "$path\ssis.ps1"
+
+sleep 5
+
+# Download and install Data Mirgation Assistant
+Invoke-WebRequest 'https://download.microsoft.com/download/C/6/3/C63D8695-CEF2-43C3-AF0A-4989507E429B/DataMigrationAssistant.msi' -OutFile 'C:\DataMigrationAssistant.msi'
+Start-Process -file 'C:\DataMigrationAssistant.msi' -arg '/qn /l*v C:\dma_install.txt' -passthru | wait-process
+
+
+# Download and install Data Mirgation Assistant
+Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2043154&clcid=0x409' -OutFile 'C:\SSMS-Setup-ENU.exe'
+$params = " /Install /Quiet SSMSInstallRoot=$install_path"
+Start-Process -FilePath 'C:\SSMS-Setup-ENU.exe' -ArgumentList $params -Wait
+
+sleep 5
+
+choco install visualstudio2017community -y -force
+choco install visualstudio2017sql
 
 Restart-Computer
