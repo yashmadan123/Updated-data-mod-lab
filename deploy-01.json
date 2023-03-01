@@ -10,7 +10,7 @@
           }
       },
       "adminPassword": {
-          "defaultValue": "Demo@pass1234567",
+          "defaultValue": "Password.1234567890",
           "type": "securestring",
           "metadata": {
               "description": "The password must be between 15 and 128 characters in length and must contain at least one number, one non-alphanumeric character, and one upper or lower case letter."
@@ -92,6 +92,9 @@
       },
       "trainerUserPassword": {
           "type": "string"
+      },
+      "azuserobjectid": {
+          "type": "string"
       }
       },
   
@@ -100,7 +103,7 @@
       "cloudlabsCommon": "[concat(' -AzureUserName ', parameters('AzureUserName'), ' -AzurePassword ', parameters('AzurePassword'), ' -AzureTenantID ', variables('AzureTenantID'), ' -AzureSubscriptionID ', variables('AzureSubscriptionID'), ' -ODLID ', parameters('ODLID'), ' -DeploymentID ', parameters('DeploymentID'),' -InstallCloudLabsShadow ', parameters('InstallCloudLabsShadow'))]",
       "location": "[resourceGroup().location]",
       "storageAccountName": "[concat('sqlhacksa', parameters('DeploymentID'))]",
-      "jbVirtualMachineName": "vm-TEAM",
+      "jbVirtualMachineName": "[concat('JumpBox-',parameters('DeploymentID'))]",
       "virtualMachineSize": "Standard_D2s_v3",
       "jbNetworkInterfaceName": "[concat( 'nic-', variables('jbVirtualMachineName'))]",
       "jbNetworkSecurityGroupName": "[concat('nsg-',variables('jbVirtualMachineName'))]",
@@ -143,7 +146,8 @@
       "dmsName": "wwi-dms",
       "dataFactoryName": "[concat('sqlhack-datafactory-', uniqueString(resourceGroup().id))]",
       "nodeSize": "Standard_A4_v2",
-      "virtualNetworkId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
+      "virtualNetworkId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+      "keyvaultname": "[concat('keyvault-',parameters('DeploymentID'))]"
   },
   "resources": [
   {
@@ -196,7 +200,7 @@
                       "catalogAdminUserName": "contosoadmin",
                       "catalogAdminPassword": {
                         "type": "SecureString",
-                        "value": "Demo@pass1234567"
+                        "value": "Password.1234567890"
                       },
                       "catalogPricingTier": null
                     }
@@ -313,7 +317,7 @@
           "autoUpgradeMinorVersion": true,
           "settings": {
             "fileUris": [
-              "https://raw.githubusercontent.com/yashmadan123/Updated-data-mod-lab/main/sqlvm.ps1",
+              "https://raw.githubusercontent.com/yashmadan123/Azure-Discover-Workshop/main/sqlvm.ps1",
               "https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/cloudlabs-windows-functions.ps1"
             ],
             "commandToExecute": "[concat('powershell.exe -ExecutionPolicy ByPass -File sqlvm.ps1', variables('cloudlabsCommon'))]"
@@ -399,10 +403,10 @@
           }
         },
         "imageReference": {
-          "publisher": "MicrosoftVisualStudio",
-                        "offer": "VisualStudio",
-                        "sku": "VS-2017-Comm-Latest-Win10-N",
-                        "version": "latest"
+          "publisher": "microsoftvisualstudio",
+                      "offer": "visualstudio2022",
+                      "sku": "vs-2022-comm-latest-ws2022",
+                      "version": "latest"
         }
       },
       "networkProfile": {
@@ -435,7 +439,7 @@
           "autoUpgradeMinorVersion": true,
           "settings": {
             "fileUris": [
-              "https://raw.githubusercontent.com/yashmadan123/Updated-data-mod-lab/main/jumpvm.ps1",
+              "https://raw.githubusercontent.com/yashmadan123/Azure-Discover-Workshop/main/jumpvm.ps1",
               "https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/cloudlabs-windows-functions.ps1"
             ],
               "commandToExecute": "[concat('powershell.exe -ExecutionPolicy ByPass -File jumpvm.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
@@ -451,6 +455,84 @@
       }
     ]
   },
+  {
+    "apiVersion": "2016-10-01",
+    "name": "[variables('keyvaultname')]",
+    "location": "[variables('location')]",
+    "type": "Microsoft.KeyVault/vaults",
+    "properties": {
+        "enabledForDeployment": false,
+        "enabledForTemplateDeployment": false,
+        "enabledForDiskEncryption": false,
+        "tenantId": "[variables('azureTenantID')]",
+        "sku": {
+            "name": "Standard",
+            "family": "A"
+        },
+        "networkAcls": {
+            "value": {
+                "defaultAction": "Allow",
+                "bypass": "AzureServices",
+                "virtualNetworkRules": [],
+                "ipRules": []
+                }
+                },
+                "accessPolicies": [
+                    {
+                        "tenantId": "[variables('azureTenantID')]",
+                        "objectId": "[parameters('azuserobjectid')]",
+                        "permissions": {
+                            "keys": [
+                                "Get",
+                                "List",
+                                "Update",
+                                "Create",
+                                "Import",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore",
+                                "Decrypt",
+                                "Encrypt",
+                                "UnwrapKey",
+                                "WrapKey",
+                                "Verify",
+                                "Sign",
+                                "Purge"
+                                ],
+                                "secrets": [
+                                    "Get",
+                                    "List",
+                                    "Set",
+                                    "Delete",
+                                    "Recover",
+                                    "Backup",
+                                    "Restore",
+                                    "Purge"
+                                    ],
+                                    "certificates": [
+                                        "Get",
+                                        "List",
+                                        "Update",
+                                        "Create",
+                                        "Import",
+                                        "Delete",
+                                        "Recover",
+                                        "Backup",
+                                        "Restore",
+                                        "ManageContacts",
+                                        "ManageIssuers",
+                                        "GetIssuers",
+                                        "ListIssuers",
+                                        "SetIssuers",
+                                        "DeleteIssuers",
+                                        "Purge"
+                                        ]
+                                        }
+                                        }
+                                        ]
+                                        }
+                                    },
   {
     "type": "Microsoft.Web/serverfarms",
     "apiVersion": "2018-02-01",
@@ -673,6 +755,7 @@
     "type": "string",
     "value": "[concat('jumpboxdns',parameters('DeploymentID'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
   },
+
   "Jumpbox VM Username": {
     "type": "string",
     "value": "[parameters('adminUsername')]"
@@ -715,7 +798,7 @@
   },
   "SQL MI Password":{
     "type": "string",
-     "value": "IAE5fAijit0w^rDM" 
+     "value": "197032d3-64e7-46a3-aced-1923655c17ab" 
   },
   "SUFFIX": {
     "type": "string",
@@ -727,8 +810,9 @@
   },
   "Resource Group Name": {
     "type": "string",
-    "value": "[concat('	Azure-Discover-RG-', parameters('DeploymentID'))]"
+    "value": "[concat('hands-on-lab-', parameters('DeploymentID'))]"
   },
+
   "Database Name": {
     "type": "string",
     "value": "[concat('WideWorldImporters', parameters('DeploymentID'))]"
