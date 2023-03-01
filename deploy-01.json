@@ -10,7 +10,7 @@
           }
       },
       "adminPassword": {
-          "defaultValue": "Pass@demo1234567",
+          "defaultValue": "Password.1234567890",
           "type": "securestring",
           "metadata": {
               "description": "The password must be between 15 and 128 characters in length and must contain at least one number, one non-alphanumeric character, and one upper or lower case letter."
@@ -196,7 +196,7 @@
                       "catalogAdminUserName": "contosoadmin",
                       "catalogAdminPassword": {
                         "type": "SecureString",
-                        "value": "Demo@pass1234567"
+                        "value": "Password.1234567890"
                       },
                       "catalogPricingTier": null
                     }
@@ -399,10 +399,10 @@
           }
         },
         "imageReference": {
-          "publisher": "microsoftvisualstudio",
-                      "offer": "visualstudio2022",
-                      "sku": "vs-2022-comm-latest-ws2022",
-                      "version": "latest"
+          "publisher": "MicrosoftVisualStudio",
+                        "offer": "VisualStudio",
+                        "sku": "VS-2017-Comm-Latest-Win10-N",
+                        "version": "latest"
         }
       },
       "networkProfile": {
