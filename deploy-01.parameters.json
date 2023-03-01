@@ -25,6 +25,9 @@
       },
       "location": {
         "value": "Central US"
+      },
+      "azuserobjectid": {
+        "value": "GET-AZUSER-OBJECTID"
       }
     }
   }
