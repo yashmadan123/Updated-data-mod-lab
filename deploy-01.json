@@ -10,7 +10,7 @@
           }
       },
       "adminPassword": {
-          "defaultValue": "Password.1234567890",
+          "defaultValue": "Demo@pass1234567",
           "type": "securestring",
           "metadata": {
               "description": "The password must be between 15 and 128 characters in length and must contain at least one number, one non-alphanumeric character, and one upper or lower case letter."
@@ -196,7 +196,7 @@
                       "catalogAdminUserName": "contosoadmin",
                       "catalogAdminPassword": {
                         "type": "SecureString",
-                        "value": "Password.1234567890"
+                        "value": "Demo@pass1234567"
                       },
                       "catalogPricingTier": null
                     }
@@ -673,7 +673,6 @@
     "type": "string",
     "value": "[concat('jumpboxdns',parameters('DeploymentID'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
   },
-
   "Jumpbox VM Username": {
     "type": "string",
     "value": "[parameters('adminUsername')]"
@@ -716,7 +715,7 @@
   },
   "SQL MI Password":{
     "type": "string",
-     "value": "197032d3-64e7-46a3-aced-1923655c17ab" 
+     "value": "IAE5fAijit0w^rDM" 
   },
   "SUFFIX": {
     "type": "string",
@@ -728,9 +727,8 @@
   },
   "Resource Group Name": {
     "type": "string",
-    "value": "[concat('hands-on-lab-', parameters('DeploymentID'))]"
+    "value": "[concat('	Azure-Discover-RG-', parameters('DeploymentID'))]"
   },
-
   "Database Name": {
     "type": "string",
     "value": "[concat('WideWorldImporters', parameters('DeploymentID'))]"
