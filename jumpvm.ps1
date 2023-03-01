@@ -138,6 +138,8 @@ Start-Process -FilePath 'C:\SSMS-Setup-ENU.exe' -ArgumentList $params -Wait
 
 sleep 5
 
+choco install visualstudio2017community -y -force
+sleep 5
 choco install visualstudio2017sql
 
 Restart-Computer
