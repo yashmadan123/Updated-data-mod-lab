@@ -403,10 +403,10 @@
           }
         },
         "imageReference": {
-          "publisher": "MicrosoftVisualStudio",
-                        "offer": "VisualStudio",
-                        "sku": "VS-2017-Comm-Latest-Win10-N",
-                        "version": "latest"
+          "publisher": "microsoftvisualstudio",
+                      "offer": "visualstudio2022",
+                      "sku": "vs-2022-comm-latest-ws2022",
+                      "version": "latest"
         }
       },
       "networkProfile": {
